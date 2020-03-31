@@ -9,7 +9,6 @@ async function getData(){
     }
 }
 
-
 async function getCsv() {
     const data = await getData();
     const table = data.split('\n');
@@ -18,13 +17,19 @@ async function getCsv() {
     return {dates, infected};
 }
 
-async function relativeChanges(){
-    const abs = await getCsv();
-    //let rel = abs.infected.forEach((el)=>'55');
-    let rel = [11,12,13,14,15];
-    let rel2 = rel.map(element => {'33';});
-    return rel2;
-}
+async function getChanges(){
+    const data = await getCsv();
+    const abs = data.infected;
+    let rel = [];
+    let perc = [];
+    for (let i = 0; i < abs.length; i++) {
+        rel[0]=0;
+        perc[0]=0;
+        rel[i] = abs[i]-abs[i-1];
+        perc[i]= rel[i]/abs[i]*100;
+    }
+    return {rel,perc};
+    }
 
 
 async function chart1() {
@@ -47,7 +52,47 @@ async function chart1() {
     });
 }
 
+async function chart2() {
+    
+    const data = await getCsv();
+    const datach = await getChanges();
+    const ctx = document.getElementById('chart2').getContext('2d');
+    const myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: data.dates,
+            datasets: [{
+                label: 'new cases in cz',
+                data: datach.rel,
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1,
+                fill: false
+            }]
+        },
+    });
+}
 
+async function chart3() {
+    
+    const data = await getCsv();
+    const datach = await getChanges();
+    const ctx = document.getElementById('chart3').getContext('2d');
+    const myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: data.dates,
+            datasets: [{
+                label: 'percentual changes in cz',
+                data: datach.perc,
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1,
+                fill: false
+            }]
+        },
+    });
+}
 
 
 const msg = async function() {
@@ -55,6 +100,9 @@ const msg = async function() {
     console.log('Message:', msg);
 }
 
-msg();
+
 chart1();
+chart2();
+chart3();
+
  
