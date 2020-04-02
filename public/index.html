@@ -8,31 +8,38 @@
 
 <body>
 
-  <h1>Some data visualisations of COVID-19</h1>
+  <h1>2020 COVID-19 COMBAT</h1>
   
-  <label for="countrySelect">Choose country:</label>
+  <label for="countrySelect">Select country:</label>
   <select id="countrySelect">
     <option value=""></option>
   </select>
   
   <h2>Selected country:<span id="country"></span></h2>
 
-
   <div class="container">
-
     <div class="chart-container">
       <canvas id="chart1"></canvas>
     </div>
-
     <div class="chart-container">
       <canvas id="chart2"></canvas>
     </div>
-
     <div class="chart-container">
       <canvas id="chart3"></canvas>
     </div> 
+  </div>
 
-
+  <h2>The whole world:</h2>
+  <div class="container">
+    <div class="chart-container">
+      <canvas id="chart4"></canvas>
+    </div>
+    <div class="chart-container">
+      <canvas id="chart5"></canvas>
+    </div>
+    <div class="chart-container">
+      <canvas id="chart6"></canvas>
+    </div> 
   </div>
 
   <div class="footer">
@@ -45,12 +52,15 @@
       Javascript client code is using ES8 syntax, so older browsers are not supported.<br>
       Simple graphs are using <a href="https://www.chartjs.org">chart.js</a> library.
     </p>
+    <br>
     <h3>roadmap:</h3>
       <ul>
-      <li>problem with duplicate countries in selection (different regions)</li>
-      <li>the whole world</li>
-      <li>more detailed report</li>
+      <li>growth simulator</li>
+      <li>styling</li>
+      <li>ranking</li>
+      <li>deaths, recovereds</li>
       <li>2 countries comparer in one graph</li>
+      <li>heroku hosting</li>
       </ul>
   </div>
 

@@ -1,43 +1,79 @@
-async function getData() {
+
+async function getDataConfirmed() {
     const response = await fetch('/confirmed');
     const text = await response.text();
     return text;
 }
 
-const rawdata = getData();
 
-async function getCountries() {
-    const data = await rawdata;
+async function getWorld() {
+    const data = await getDataConfirmed();
     const rows = data.split('\n');
-    const countries = [];
-    rows.forEach(el => {
-        const col = el.split(',');
-        const country = col[1];
-        countries.push(country);
-    })
-    countries.shift();
+    const totalDays = rows[0].split(',').slice(4).length;
+    let confirmed = Array(totalDays).fill(0);
+    
+    for(let i =1;i<rows.length;i++){
+        const cols = rows[i].split(',').slice(4);
+        for (let j=0;j<cols.length;j++){
+            confirmed[j] += parseInt(cols[j]);
+        }
+    }
+    return confirmed;
+}
+
+async function createCountries(){
+    let countries = [];
+    const data = await getDataConfirmed();
+    const rows = data.split('\n');
+    const totalDays = rows[0].split(',').slice(4).length;
+    
+    for(let i =1;i<rows.length;i++){
+        
+        const cols = rows[i].split(',');
+        let countryName = cols[1];
+        let countryConfirmed = rows[i].split(',').slice(4).map(val=>parseInt(val));
+        
+        let notSetYet = true;
+        //for every new row in table we need to compare all objects
+        countries.forEach(country=>{
+            //searching for already added countries to array of objects
+            if (country.name == countryName){
+                //summ all values from different countries contributors
+                for (let j=0;j<totalDays;j++){
+                    country.confirmed[j] +=  countryConfirmed[j];
+                }
+                notSetYet = false;
+            }
+        })
+        if (notSetYet) {
+            countries.push({name: countryName, confirmed: countryConfirmed});
+        }
+    }
     return countries;
 }
 
-async function getCountryIndex(country) {
-    const countries = await getCountries();
-    const countryIndex = countries.findIndex(el => el == country) + 1;
-    return countryIndex;
+async function getCountries() {
+    let countries = [];
+    const c = await createCountries();
+    c.forEach(el=>{countries.push(el.name);})
+    return countries;
 }
 
-async function getDetails(country) {
-    const data = await rawdata;
+async function getConfirmed(country){
+    const c = await createCountries();
+    const obj = c.find(o => o.name == country);
+    return obj.confirmed;
+}
+
+async function getDates(){
+    const data = await getDataConfirmed();
     const rows = data.split('\n');
-    const countryIndex = await getCountryIndex(country);
-
-    const dates = rows[0].split(',').slice(40);
-    const confirmed = rows[countryIndex].split(',').slice(40);
-    return {dates,confirmed};
+    const dates = rows[0].split(',').slice(4);
+    return dates;
 }
 
-async function getChanges(country) {
-    const data = await getDetails(country);
-    const abs = data.confirmed;
+async function getChanges(values) {
+    const abs = values;
     let relative = [];
     let percentual = [];
     for (let i = 0; i < abs.length; i++) {
@@ -47,6 +83,14 @@ async function getChanges(country) {
         percentual[i] = relative[i] / abs[i] * 100;
     }
     return {relative,percentual};
+}
+
+function ex(start, growth, days){
+    let result = start;
+    for(i=1;i<days;i++){
+        result = result*growth;
+    }
+    return result;
 }
 
 
@@ -68,14 +112,17 @@ function createOptions(labels, datasetlabel, data) {
 }
 
 async function drawChart(country) {
-    const data = await getDetails(country);
-    const datachanges = await getChanges(country);
+    const dates = await getDates();
+    const confirmed = await getConfirmed(country);
+    const changes = await getChanges(confirmed);
+        
+    const graphoptions1 = createOptions(dates,'total confirmed cases',confirmed);
+    const graphoptions2 = createOptions(dates,'new cases',changes.relative);
+    const graphoptions3 = createOptions(dates,'percentual changes',changes.percentual);
+
     const ctx1 = document.getElementById('chart1').getContext('2d');
     const ctx2 = document.getElementById('chart2').getContext('2d');
     const ctx3 = document.getElementById('chart3').getContext('2d');
-    const graphoptions1 = createOptions(data.dates,'total confirmed cases',data.confirmed);
-    const graphoptions2 = createOptions(data.dates,'new cases',datachanges.relative);
-    const graphoptions3 = createOptions(data.dates,'percentual changes',datachanges.percentual);
 
     if (window.bar1 != undefined) {window.bar1.destroy();}
     window.bar1 = new Chart(ctx1, graphoptions1);
@@ -85,6 +132,22 @@ async function drawChart(country) {
     window.bar3 = new Chart(ctx3, graphoptions3);
 }
 
+async function drawChartWorld() {
+    const dates = await getDates();
+    const confirmed = await getWorld();
+    const changes = await getChanges(confirmed);
+    
+    const graphoptions4 = createOptions(dates,'total confirmed cases',confirmed);
+    const graphoptions5 = createOptions(dates,'new cases',changes.relative);
+    const graphoptions6 = createOptions(dates,'percentual changes',changes.percentual);
+
+    const ctx4 = document.getElementById('chart4').getContext('2d');
+    const ctx5 = document.getElementById('chart5').getContext('2d');
+    const ctx6 = document.getElementById('chart6').getContext('2d');
+    window.bar4 = new Chart(ctx4, graphoptions4);
+    window.bar5 = new Chart(ctx5, graphoptions5);
+    window.bar6 = new Chart(ctx6, graphoptions6);
+}
 
 
 const defaultCountry = 'Czechia';
@@ -93,8 +156,10 @@ const countryHeader = document.getElementById('country');
 countryHeader.textContent = ` ${country}`;
 
 drawChart(country);
+drawChartWorld();
 
 //add selecting of countries form
+
 getCountries().then(countries => {
     const countryOption = document.getElementById('countrySelect');
     countries.forEach(country => {
@@ -112,14 +177,7 @@ getCountries().then(countries => {
 
 
 
-/*
- function getAllIndexes(arr, val) {
-    var indexes = [], i = -1;
-    while ((i = arr.indexOf(val, i+1)) != -1){
-        indexes.push(i);
-    }
-    return indexes;
-}
-*/
+
+
 
 
