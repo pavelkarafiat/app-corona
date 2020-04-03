@@ -4,10 +4,11 @@ async function getDataConfirmed() {
     const text = await response.text();
     return text;
 }
-
+//call the fetch only once!
+const rawConfirmed = getDataConfirmed();
 
 async function getWorld() {
-    const data = await getDataConfirmed();
+    const data = await rawConfirmed;
     const rows = data.split('\n');
     const totalDays = rows[0].split(',').slice(4).length;
     let confirmed = Array(totalDays).fill(0);
@@ -23,7 +24,7 @@ async function getWorld() {
 
 async function createCountries(){
     let countries = [];
-    const data = await getDataConfirmed();
+    const data = await rawConfirmed;
     const rows = data.split('\n');
     const totalDays = rows[0].split(',').slice(4).length;
     
@@ -52,6 +53,41 @@ async function createCountries(){
     return countries;
 }
 
+async function getSorting(sortBy){
+    let statistics = [];
+    const c = await createCountries();
+    const days = await getDates();
+    for(i=0;i<c.length;i++){
+        const res = {};
+        const l = days.length;
+        res.name=c[i].name;
+        res.abs=c[i].confirmed[l-1];
+        res.rel=(c[i].confirmed[l-1])-(c[i].confirmed[l-2]);
+        const rel1 = res.rel;
+        const rel2 = (c[i].confirmed[l-2])-(c[i].confirmed[l-3]);
+        const rel3 = (c[i].confirmed[l-3])-(c[i].confirmed[l-4]);
+        const rel4 = (c[i].confirmed[l-4])-(c[i].confirmed[l-5]);
+        const avrRel = (rel1+rel2+rel3+rel4)/4;
+        res.perc=avrRel/res.abs*100;
+        statistics.push(res);
+    }
+    switch(sortBy){
+        case 'abs':
+            statistics.sort((a,b)=>{return b.abs-a.abs});
+            break;
+        case 'rel':
+            statistics.sort((a,b)=>{return b.rel-a.rel});
+            break;
+        case 'perc':
+            statistics.sort((a,b)=>{return b.perc-a.perc});
+            statistics=statistics.filter(el=>{return el.abs > 500});
+            console.log(statistics)
+            break;
+    }
+    return statistics;
+}
+
+
 async function getCountries() {
     let countries = [];
     const c = await createCountries();
@@ -66,7 +102,7 @@ async function getConfirmed(country){
 }
 
 async function getDates(){
-    const data = await getDataConfirmed();
+    const data = await rawConfirmed;
     const rows = data.split('\n');
     const dates = rows[0].split(',').slice(4);
     return dates;
@@ -149,6 +185,7 @@ async function drawChartWorld() {
     window.bar6 = new Chart(ctx6, graphoptions6);
 }
 
+/*-----------------------rendering-----------------------------*/
 
 const defaultCountry = 'Czechia';
 let country = defaultCountry;
@@ -158,8 +195,7 @@ countryHeader.textContent = ` ${country}`;
 drawChart(country);
 drawChartWorld();
 
-//add selecting of countries form
-
+//render selecting form
 getCountries().then(countries => {
     const countryOption = document.getElementById('countrySelect');
     countries.forEach(country => {
@@ -175,9 +211,42 @@ getCountries().then(countries => {
     });
 });
 
+//render statistics
+getSorting('abs').then(list=>{
+    const rankingDiv = document.getElementById('abs');
+    for(let i=0; i<20;i++){
+        const entry = document.createElement('p');
+        const name = list[i].name;
+        const abs = list[i].abs;
+        entry.textContent=`${i+1}. ${name}, ${abs}`;
+        rankingDiv.append(entry);
+    };
+})
 
+getSorting('rel').then(list=>{
+    const rankingDiv = document.getElementById('rel');
+    for(let i=0; i<20;i++){
+        const entry = document.createElement('p');
+        const name = list[i].name;
+        const rel = list[i].rel;
+        entry.textContent=`${i+1}. ${name}, ${rel}`;
+        rankingDiv.append(entry);
+    };
+})
 
-
+getSorting('perc').then(list=>{
+    const rankingDiv = document.getElementById('perc');
+    for(let i=0; i<20;i++){
+        const entry = document.createElement('p');
+        const name = list[i].name;
+        const perc = list[i].perc;
+        entry.textContent=`${i+1}. ${name}, ${perc.toFixed(0)}%`;
+        rankingDiv.append(entry);
+    };
+        const info = document.createElement('p');
+        info.textContent = `*only countries with more than 500 cases, growth is average for last 4 days`;
+        rankingDiv.append(info);
+})
 
 
 
