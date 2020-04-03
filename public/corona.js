@@ -79,8 +79,8 @@ async function getSorting(sortBy){
             statistics.sort((a,b)=>{return b.rel-a.rel});
             break;
         case 'perc':
-            statistics.sort((a,b)=>{return b.perc-a.perc});
             statistics=statistics.filter(el=>{return el.abs > 500});
+            statistics.sort((a,b)=>{return b.perc-a.perc});
             console.log(statistics)
             break;
     }
@@ -116,6 +116,8 @@ async function getChanges(values) {
         relative[0] = 0;
         percentual[0] = 0;
         relative[i] = abs[i] - abs[i - 1];
+        //avoid some strange errors in data (less total cases in next day)
+        if(relative[i]<0) relative[i] =0;
         percentual[i] = relative[i] / abs[i] * 100;
     }
     return {relative,percentual};
@@ -138,10 +140,11 @@ function createOptions(labels, datasetlabel, data) {
             datasets: [{
                 label: datasetlabel,
                 data: data,
-                backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                borderColor: 'rgba(255, 99, 132, 1)',
+                backgroundColor: 'rgba(255, 255, 255, 1)',
+                borderColor: '#F03009',
                 borderWidth: 1,
-                fill: false
+                fill: false,
+                radius: 1.5
             }]
         },
     };
@@ -214,7 +217,7 @@ getCountries().then(countries => {
 //render statistics
 getSorting('abs').then(list=>{
     const rankingDiv = document.getElementById('abs');
-    for(let i=0; i<20;i++){
+    for(let i=0; i<15;i++){
         const entry = document.createElement('p');
         const name = list[i].name;
         const abs = list[i].abs;
@@ -225,7 +228,7 @@ getSorting('abs').then(list=>{
 
 getSorting('rel').then(list=>{
     const rankingDiv = document.getElementById('rel');
-    for(let i=0; i<20;i++){
+    for(let i=0; i<15;i++){
         const entry = document.createElement('p');
         const name = list[i].name;
         const rel = list[i].rel;
@@ -236,7 +239,7 @@ getSorting('rel').then(list=>{
 
 getSorting('perc').then(list=>{
     const rankingDiv = document.getElementById('perc');
-    for(let i=0; i<20;i++){
+    for(let i=0; i<15;i++){
         const entry = document.createElement('p');
         const name = list[i].name;
         const perc = list[i].perc;

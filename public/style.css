@@ -1,18 +1,31 @@
 
+/*design inspiration
+https://rsms.me/inter/
+*/
 
 body{
-    font-family: Arial, Helvetica, sans-serif;
-    padding: 60px;
-    color: dimgray;
+    font-family: 'Inter',Arial, Helvetica, sans-serif;
+    padding: 60px 60px 60px 60px;
+    color: #010101;
+    /*background-color:#f3f3f3;*/
 }
 
 h1{
-    font-size: 40px;
-    margin-bottom: 100px;
+    margin-bottom: 40px;
+    color: #010101;
+    font-size: 81px;
+    letter-spacing: -0.055em;
+    line-height: 0.9em;
+    text-indent: -0.03em;
+    font-weight: 740;
 }
 
 h2{
     margin: 50px 0 20px 0;
+}
+
+#options{
+    margin: 60px 0 30px 0;
 }
 
 .container {
@@ -23,10 +36,13 @@ h2{
 }
 
 .chart-container {
-    width: 500px;
-    margin-left: 40px;
-    margin-right: 40px;
-    margin-bottom: 40px;
+    width: 460px;
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-bottom: 0px;
+    background-color: #f0ebe3;
+    padding: 20px;
+    border-radius: 5px;
 }
 
 ul li {
@@ -48,3 +64,8 @@ p {
 #stat div{
     width: 300px;
 }
+
+.center{
+    text-align: center;
+}
+

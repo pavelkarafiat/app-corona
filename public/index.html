@@ -3,19 +3,21 @@
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 
 <body>
 
-  <h1>2020 COVID-19 COMBAT</h1>
+  <div class="center">
+    <h1>Covid-19 in numbers</h1>
+    <div id="options">
+      <label for="countrySelect">Select country:</label>
+      <select id="countrySelect"><option value=""></option></select>
+      <h2>Selected country:<span id="country"></h2></span>
+    </div>
+  </div>
 
-  <label for="countrySelect">Select country:</label>
-  <select id="countrySelect">
-    <option value=""></option>
-  </select>
-
-  <h2>Selected country:<span id="country"></span></h2>
 
   <div class="container">
     <div class="chart-container">
@@ -29,7 +31,7 @@
     </div>
   </div>
 
-  <h2>The whole world:</h2>
+  <h2 class="center">The whole world:</h2>
   <div class="container">
     <div class="chart-container">
       <canvas id="chart4"></canvas>
@@ -42,7 +44,7 @@
     </div>
   </div>
 
-  <div id = "stat" class="container">
+  <div id="stat" class="container">
     <div id="abs">
       <h2>total cases:</h2>
     </div>
@@ -62,6 +64,7 @@
       App is hosted on <a href="https://glitch.com/">Glitch.com</a> for educational and experimental purposes for
       free<br>
     </p>
+  </div>
 
 
 </body>
