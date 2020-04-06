@@ -5,9 +5,13 @@ https://rsms.me/inter/
 
 body{
     font-family: 'Inter',Arial, Helvetica, sans-serif;
-    padding: 60px 60px 60px 60px;
+    padding: 60px 0px 60px 0px;
     color: #010101;
-    /*background-color:#f3f3f3;*/
+    margin: 0px;
+}
+
+.footer{
+    padding: 0px 60px;
 }
 
 h1{
@@ -24,9 +28,57 @@ h2{
     margin: 50px 0 20px 0;
 }
 
+h2.headline{
+    font-size: 40px;
+    letter-spacing: -0.055em;
+    line-height: 0.9em;
+    text-indent: -0.03em;
+    font-weight: 740;
+}
+
 #options{
     margin: 60px 0 30px 0;
 }
+
+select{
+    height:30px;
+}
+
+.disc{
+    width:75px;
+    height:75px;
+    display: inline-block;
+    margin: 0px 15px;
+    border-radius: 50px;
+}
+
+.r{
+    color: #5c9723;
+}
+
+.d{
+    color: #262626;
+}
+
+.c{
+    color: #ed330e;
+}
+
+.info{
+    margin-bottom: 20px;
+}
+
+.infoText{
+    position: relative;
+    font-size: 1.2em;
+    margin: 50px 0px 50px 0px;
+}
+
+.infoTextb{
+    font-weight:900;
+    font-size: 1.4em;
+}
+
 
 .container {
     display: flex;
@@ -36,7 +88,7 @@ h2{
 }
 
 .chart-container {
-    width: 460px;
+    width: 450px;
     margin-left: 0px;
     margin-right: 0px;
     margin-bottom: 0px;
@@ -65,7 +117,16 @@ p {
     width: 300px;
 }
 
+#stat .quad{
+    height: 5px;
+    background-color: rgb(150, 150, 150,0.5);
+}
+
 .center{
     text-align: center;
 }
 
+.light{
+    color: rgb(150, 150, 150);
+    margin-top: 20px;
+}

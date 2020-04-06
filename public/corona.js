@@ -61,7 +61,7 @@ async function createCountries(domain) {
         countries.forEach(country => {
             if (country.name == countryName) {
                 for (let j = 0; j < totalDays; j++) {
-                    country.values[j] += domainData[j];
+                    country.val[j] += domainData[j];
                 }
                 notSetYet = false;
             }
@@ -69,7 +69,7 @@ async function createCountries(domain) {
         if (notSetYet) {
             countries.push({
                 name: countryName,
-                values: domainData
+                val: domainData
             });
         }
     }
@@ -88,13 +88,13 @@ async function getSorting(sortBy,domain) {
         const l = days.length;
         
         res.name = c[i].name;
-        res.abs = c[i].values[l - 1];
-        res.rel = (c[i].values[l - 1]) - (c[i].values[l - 2]);
+        res.abs = c[i].val[l - 1];
+        res.rel = (c[i].val[l - 1]) - (c[i].val[l - 2]);
         
         const rel1 = res.rel;
-        const rel2 = (c[i].values[l - 2]) - (c[i].values[l - 3]);
-        const rel3 = (c[i].values[l - 3]) - (c[i].values[l - 4]);
-        const rel4 = (c[i].values[l - 4]) - (c[i].values[l - 5]);
+        const rel2 = (c[i].val[l - 2]) - (c[i].val[l - 3]);
+        const rel3 = (c[i].val[l - 3]) - (c[i].val[l - 4]);
+        const rel4 = (c[i].val[l - 4]) - (c[i].val[l - 5]);
         const avrRel = (rel1 + rel2 + rel3 + rel4) / 4;
         
         res.perc = avrRel / res.abs * 100;
@@ -127,19 +127,19 @@ async function getCountries() {
 async function getConfirmed(country) {
     const c = await createCountries('confirmed');
     const obj = c.find(o => o.name == country);
-    return obj.values;
+    return obj.val;
 }
 
 async function getDeaths(country) {
     const c = await createCountries('deaths');
     const obj = c.find(o => o.name == country);
-    return obj.values;
+    return obj.val;
 }
 
 async function getRecovered(country) {
     const c = await createCountries('recovered');
     const obj = c.find(o => o.name == country);
-    return obj.values;
+    return obj.val;
 }
 
 async function getDates() {
@@ -175,6 +175,7 @@ function ex(start, growth, days) {
     return result;
 }
 
+/*-----------------------graph-----------------------------*/
 
 function createOptions(labels, datasetlabel, datain, colors) {
     return graphOptions = {
@@ -211,14 +212,41 @@ function createOptions(labels, datasetlabel, datain, colors) {
         ]
         },
         options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            aspectRatio: 1.66,
             legend: {
+                display: true,
                 labels: {
-                    fontColor: '#353535',
+                    fontColor: '#000',
+                    fontFamily: 'Inter',
+                    boxWidth: 10,
                 }
-            }
+            },
+            scales: {
+                yAxes: [{
+                    gridLines: {
+                        display: true
+                    },
+                    ticks:{
+                        fontFamily: 'Inter',
+                        fontSize: 12
+                    }
+                }],
+                xAxes: [{
+                    gridLines: {
+                        display: false
+                    },
+                    ticks: {
+                        fontFamily: 'Inter',
+                        fontSize: 10
+                    }
+                }]
+            }                
         }
-    };
-}
+    }
+};
+
 
 async function drawChart(country) {
     const dates = await getDates();
@@ -226,14 +254,18 @@ async function drawChart(country) {
     const confirmed = await getConfirmed(country);
     const confirmedChng = await getChanges(confirmed);
     const deaths = await getDeaths(country);
-    console.log(deaths);
     const deathsChng = await getChanges(deaths);
     const recovered = await getRecovered(country);
     const recoveredChng = await getChanges(recovered);
+    
+    const red = '#ed330e';
+    const dark = '#262626';
+    const green = '#5c9723';
+    
 
-    const graphoptions1 = createOptions(dates, ['cases','deaths','recovered'], [confirmed,deaths,recovered], ['#ff0000','#000','#5c9723']);
-    const graphoptions2 = createOptions(dates, ['new cases','new deaths','new recovered'], [confirmedChng.relative,deathsChng.relative,recoveredChng.relative],['#ff0000','#000','#5c9723']);
-    const graphoptions3 = createOptions(dates, ['growth cases','growth deaths','growth recovered'], [confirmedChng.percentual,deathsChng.percentual,recoveredChng.percentual],['#ff0000','#000','#5c9723']);
+    const graphoptions1 = createOptions(dates, ['cases','deaths','recovered'], [confirmed,deaths,recovered], [red,dark,green]);
+    const graphoptions2 = createOptions(dates, ['new cases','new deaths','new recovered'], [confirmedChng.relative,deathsChng.relative,recoveredChng.relative],[red,dark,green]);
+    const graphoptions3 = createOptions(dates, ['growth cases','growth deaths','growth recovered'], [confirmedChng.percentual,deathsChng.percentual,recoveredChng.percentual],[red,dark,green]);
 
     const ctx1 = document.getElementById('chart1').getContext('2d');
     const ctx2 = document.getElementById('chart2').getContext('2d');
@@ -262,10 +294,14 @@ async function drawChartWorld() {
     const deathsChng = await getChanges(deaths);
     const recovered = await getWorld('recovered');
     const recoveredChng = await getChanges(recovered);
+    
+    const red = '#ed330e';
+    const dark = '#262626';
+    const green = '#5c9723';
 
-    const graphoptions4 = createOptions(dates, ['cases','deaths','recovered'], [confirmed,deaths,recovered], ['#ff0000','#000','#5c9723']);
-    const graphoptions5 = createOptions(dates, ['new cases','new deaths','new recovered'], [confirmedChng.relative,deathsChng.relative,recoveredChng.relative],['#ff0000','#000','#5c9723']);
-    const graphoptions6 = createOptions(dates, ['growth cases','growth deaths','growth recovered'], [confirmedChng.percentual,deathsChng.percentual,recoveredChng.percentual],['#ff0000','#000','#5c9723']);
+    const graphoptions4 = createOptions(dates, ['cases','deaths','recovered'], [confirmed,deaths,recovered], [red,dark,green]);
+    const graphoptions5 = createOptions(dates, ['new cases','new deaths','new recovered'], [confirmedChng.relative,deathsChng.relative,recoveredChng.relative],[red,dark,green]);
+    const graphoptions6 = createOptions(dates, ['growth cases','growth deaths','growth recovered'], [confirmedChng.percentual,deathsChng.percentual,recoveredChng.percentual],[red,dark,green]);
 
     const ctx4 = document.getElementById('chart4').getContext('2d');
     const ctx5 = document.getElementById('chart5').getContext('2d');
@@ -283,58 +319,113 @@ let country = defaultCountry;
 const countryHeader = document.getElementById('country');
 countryHeader.textContent = ` ${country}`;
 
+renderOption();
 drawChart(country);
 drawChartWorld();
+renderInfoCountry(country);
+renderInfoWorld();
+renderSorting(15,'confirmed');
 
-//render selecting form
-getCountries().then(countries => {
+async function renderInfoCountry(country){
+    let c = await getConfirmed(country);
+    let d = await getDeaths(country);
+    let r = await getRecovered(country);
+    c = c[c.length - 1];
+    d = d[d.length - 1];
+    r = r[r.length - 1];
+    document.getElementById('infoCountryC').textContent = `${c} `;
+    document.getElementById('infoCountryD').textContent = `${(d/c*100).toFixed(1)}% `;
+    document.getElementById('infoCountryR').textContent = `${(r/c*100).toFixed(1)}% `;
+}
+
+async function renderInfoWorld(){
+    let c = await getWorld('confirmed');
+    let d = await getWorld('deaths');
+    let r = await getWorld('recovered');
+    c = c[c.length - 2];
+    d = d[d.length - 2];
+    r = r[r.length - 2];
+    document.getElementById('infoWorldC').textContent = `${c} `;
+    document.getElementById('infoWorldD').textContent = `${(d/c*100).toFixed(1)}% `;
+    document.getElementById('infoWorldR').textContent = `${(r/c*100).toFixed(1)}% `;
+}
+
+async function renderOption() {
     const countryOption = document.getElementById('countrySelect');
+    let countries = await createCountries('confirmed');
+    countries.sort(((a, b) => (a.name > b.name) ? 1 : -1));
+    //show only countries with cases more than 500
+    countries = countries.filter(el => {
+        return (el.val[el.val.length-1] > 500);
+    });
     countries.forEach(country => {
         const entry = document.createElement('option');
-        entry.innerHTML = country;
-        entry.value = country;
+        entry.innerHTML = country.name;
+        entry.value = country.name;
         countryOption.append(entry);
     });
     countryOption.addEventListener('change', (event) => {
         country = event.target.value;
         countryHeader.textContent = ` ${country}`;
+        renderInfoCountry(country);
         drawChart(country);
     });
-});
+}
 
-//render statistics
-getSorting('abs','confirmed').then(list => {
-    const rankingDiv = document.getElementById('abs');
-    for (let i = 0; i < 15; i++) {
+async function renderSorting(entries,domain){
+    
+    let sortAbs, sortRel, sortPerc = '';
+    if (domain == 'confirmed'){
+        console.log('success');
+        sortAbs = await getSorting('abs','confirmed');
+        sortRel = await getSorting('rel','confirmed');
+        sortPerc = await getSorting('perc','confirmed');
+    }
+    
+    const divAbs = document.getElementById('abs');
+    const divRel = document.getElementById('rel');
+    const divPerc = document.getElementById('perc');
+    const barMax = 170;
+    const red = '#ed330e';
+    const dark = '#262626';
+    const green = '#5c9723';
+    
+    for (let i = 0; i < entries; i++) {
         const entry = document.createElement('p');
-        const name = list[i].name;
-        const abs = list[i].abs;
+        const name = sortAbs[i].name;
+        const abs = sortAbs[i].abs;
         entry.textContent = `${i+1}. ${name}, ${abs}`;
-        rankingDiv.append(entry);
+        divAbs.append(entry);
+        
+        const quad = document.createElement('div');
+        quad.setAttribute('class', 'quad');
+        const remap = sortAbs[0].abs/barMax;
+        quad.style.width = `${abs/remap}px`;
+        divAbs.append(quad);
     };
-})
-
-getSorting('rel','confirmed').then(list => {
-    const rankingDiv = document.getElementById('rel');
-    for (let i = 0; i < 15; i++) {
+    for (let i = 0; i < entries; i++) {
         const entry = document.createElement('p');
-        const name = list[i].name;
-        const rel = list[i].rel;
+        const name = sortRel[i].name;
+        const rel = sortRel[i].rel;
         entry.textContent = `${i+1}. ${name}, ${rel}`;
-        rankingDiv.append(entry);
-    };
-})
+        divRel.append(entry);
 
-getSorting('perc','confirmed').then(list => {
-    const rankingDiv = document.getElementById('perc');
-    for (let i = 0; i < 15; i++) {
+        const quad = document.createElement('div');
+        quad.setAttribute('class', 'quad');
+        const remap = sortRel[0].rel/barMax;
+        quad.style.width = `${rel/remap}px`;
+        divRel.append(quad);
+    };
+    for (let i = 0; i < entries; i++) {
         const entry = document.createElement('p');
-        const name = list[i].name;
-        const perc = list[i].perc;
+        const name = sortPerc[i].name;
+        const perc = sortPerc[i].perc;
         entry.textContent = `${i+1}. ${name}, ${perc.toFixed(0)}%`;
-        rankingDiv.append(entry);
+        divPerc.append(entry);
     };
     const info = document.createElement('p');
     info.textContent = `*only countries with more than 500 cases, growth is average for last 4 days`;
-    rankingDiv.append(info);
-})
+    info.setAttribute('class', 'light');
+    divPerc.append(info);
+}
+
