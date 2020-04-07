@@ -10,9 +10,6 @@ body{
     margin: 0px;
 }
 
-.footer{
-    padding: 0px 60px;
-}
 
 h1{
     margin-bottom: 40px;
@@ -25,7 +22,7 @@ h1{
 }
 
 h2{
-    margin: 50px 0 20px 0;
+    margin: 20px 0 20px 0;
 }
 
 h2.headline{
@@ -34,49 +31,11 @@ h2.headline{
     line-height: 0.9em;
     text-indent: -0.03em;
     font-weight: 740;
+    margin-top: 40px;
 }
 
-#options{
-    margin: 60px 0 30px 0;
-}
-
-select{
-    height:30px;
-}
-
-.disc{
-    width:75px;
-    height:75px;
-    display: inline-block;
-    margin: 0px 15px;
-    border-radius: 50px;
-}
-
-.r{
-    color: #5c9723;
-}
-
-.d{
-    color: #262626;
-}
-
-.c{
-    color: #ed330e;
-}
-
-.info{
-    margin-bottom: 20px;
-}
-
-.infoText{
-    position: relative;
-    font-size: 1.2em;
-    margin: 50px 0px 50px 0px;
-}
-
-.infoTextb{
-    font-weight:900;
-    font-size: 1.4em;
+p {
+    line-height: 1.8;
 }
 
 
@@ -91,21 +50,30 @@ select{
     width: 450px;
     margin-left: 0px;
     margin-right: 0px;
-    margin-bottom: 0px;
     background-color: #f0ebe3;
     padding: 20px;
     border-radius: 5px;
 }
 
-ul li {
-    margin-bottom: 10px;
-    color: rgb(150, 150, 150);
-    font-size: 16px;
+#options{
+    margin: 60px 0 30px 0;
 }
 
-p {
-    line-height: 1.8;
+.info{
+    margin: 0px 60px 20px 60px;
 }
+
+.infoText{
+    position: relative;
+    font-size: 1.2em;
+    margin: 50px 0px 50px 0px;
+}
+
+.infoTextb{
+    font-weight:900;
+    font-size: 1.4em;
+}
+
 
 #stat p{
     line-height: 1.4;
@@ -122,11 +90,55 @@ p {
     background-color: rgb(150, 150, 150,0.5);
 }
 
+#stat .doubling{
+    font-size: 9px;
+    color: rgb(150, 150, 150);
+    position: relative;
+    bottom: 3px;
+}
+
+.buttons{
+    text-align: center;
+    margin: 70px 0px 10px 0px;
+    /*font-size: 0px;*/
+}
+
+.buttons button{
+    padding: 8px 20px;
+    color: #FFFFFF;
+    border: none;
+    display: inline;
+    cursor: pointer;
+}
+
+.footer{
+    padding: 0px 60px;
+    margin-top: 70px;
+    max-width: 500px;
+}
+
+select{
+    height:30px;
+}
+
+.r{color: #5c9723;}
+.d{color: #262626;}
+.c{color: #ed330e;}
+.rb{background-color: #5c9723;}
+.db{background-color: #262626;}
+.cb{background-color: #ed330e;}
+
+
+#stat p.light{
+    color: rgb(150, 150, 150);
+    margin-top: 10px;
+}
+
 .center{
     text-align: center;
 }
 
-.light{
-    color: rgb(150, 150, 150);
-    margin-top: 20px;
-}
+
+
+
+

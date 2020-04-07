@@ -175,9 +175,15 @@ function ex(start, growth, days) {
     return result;
 }
 
+function doublingTime(growth){
+    return 70/growth;
+    //this very simple aprox formula is taken from here
+    //https://en.wikipedia.org/wiki/Doubling_time
+}
+
 /*-----------------------graph-----------------------------*/
 
-function createOptions(labels, datasetlabel, datain, colors) {
+function createOptions(labels, datasetlabel, datain, colors, unit) {
     return graphOptions = {
         type: 'line',
         data: {
@@ -230,7 +236,10 @@ function createOptions(labels, datasetlabel, datain, colors) {
                     },
                     ticks:{
                         fontFamily: 'Inter',
-                        fontSize: 12
+                        fontSize: 12,
+                        callback: function(value, index, values) {
+                            return `${value}${unit}`;
+                        }
                     }
                 }],
                 xAxes: [{
@@ -239,7 +248,7 @@ function createOptions(labels, datasetlabel, datain, colors) {
                     },
                     ticks: {
                         fontFamily: 'Inter',
-                        fontSize: 10
+                        fontSize: 10,
                     }
                 }]
             }                
@@ -263,9 +272,9 @@ async function drawChart(country) {
     const green = '#5c9723';
     
 
-    const graphoptions1 = createOptions(dates, ['cases','deaths','recovered'], [confirmed,deaths,recovered], [red,dark,green]);
-    const graphoptions2 = createOptions(dates, ['new cases','new deaths','new recovered'], [confirmedChng.relative,deathsChng.relative,recoveredChng.relative],[red,dark,green]);
-    const graphoptions3 = createOptions(dates, ['growth cases','growth deaths','growth recovered'], [confirmedChng.percentual,deathsChng.percentual,recoveredChng.percentual],[red,dark,green]);
+    const graphoptions1 = createOptions(dates, ['cases','deaths','recovered'], [confirmed,deaths,recovered], [red,dark,green],'');
+    const graphoptions2 = createOptions(dates, ['new cases','new deaths','new recovered'], [confirmedChng.relative,deathsChng.relative,recoveredChng.relative],[red,dark,green],'');
+    const graphoptions3 = createOptions(dates, ['growth cases','growth deaths','growth recovered'], [confirmedChng.percentual,deathsChng.percentual,recoveredChng.percentual],[red,dark,green],'%');
 
     const ctx1 = document.getElementById('chart1').getContext('2d');
     const ctx2 = document.getElementById('chart2').getContext('2d');
@@ -299,9 +308,9 @@ async function drawChartWorld() {
     const dark = '#262626';
     const green = '#5c9723';
 
-    const graphoptions4 = createOptions(dates, ['cases','deaths','recovered'], [confirmed,deaths,recovered], [red,dark,green]);
-    const graphoptions5 = createOptions(dates, ['new cases','new deaths','new recovered'], [confirmedChng.relative,deathsChng.relative,recoveredChng.relative],[red,dark,green]);
-    const graphoptions6 = createOptions(dates, ['growth cases','growth deaths','growth recovered'], [confirmedChng.percentual,deathsChng.percentual,recoveredChng.percentual],[red,dark,green]);
+    const graphoptions4 = createOptions(dates, ['cases','deaths','recovered'], [confirmed,deaths,recovered], [red,dark,green],'');
+    const graphoptions5 = createOptions(dates, ['new cases','new deaths','new recovered'], [confirmedChng.relative,deathsChng.relative,recoveredChng.relative],[red,dark,green],'');
+    const graphoptions6 = createOptions(dates, ['growth cases','growth deaths','growth recovered'], [confirmedChng.percentual,deathsChng.percentual,recoveredChng.percentual],[red,dark,green],'%');
 
     const ctx4 = document.getElementById('chart4').getContext('2d');
     const ctx5 = document.getElementById('chart5').getContext('2d');
@@ -325,6 +334,7 @@ drawChartWorld();
 renderInfoCountry(country);
 renderInfoWorld();
 renderSorting(15,'confirmed');
+sortingButtons();
 
 async function renderInfoCountry(country){
     let c = await getConfirmed(country);
@@ -375,21 +385,56 @@ async function renderOption() {
 async function renderSorting(entries,domain){
     
     let sortAbs, sortRel, sortPerc = '';
+    let headline ='';
+    const red = '#ed330e';
+    const dark = '#262626';
+    const green = '#5c9723';
+    let col ='';
+
     if (domain == 'confirmed'){
-        console.log('success');
         sortAbs = await getSorting('abs','confirmed');
         sortRel = await getSorting('rel','confirmed');
         sortPerc = await getSorting('perc','confirmed');
+        headline = 'cases';
+        col = red;
+    }
+    else if (domain == 'deaths'){
+        sortAbs = await getSorting('abs','deaths');
+        sortRel = await getSorting('rel','deaths');
+        sortPerc = await getSorting('perc','deaths');
+        headline = 'deaths';
+        col = dark;
+    }
+    else if (domain == 'recovered'){
+        sortAbs = await getSorting('abs','recovered');
+        sortRel = await getSorting('rel','recovered');
+        sortPerc = await getSorting('perc','recovered');
+        headline = 'recovered';
+        col = green;
     }
     
     const divAbs = document.getElementById('abs');
     const divRel = document.getElementById('rel');
     const divPerc = document.getElementById('perc');
     const barMax = 170;
-    const red = '#ed330e';
-    const dark = '#262626';
-    const green = '#5c9723';
     
+    const headAbs = document.createElement('h2');
+    headAbs.textContent=headline;
+    divAbs.innerHTML='';
+    divAbs.append(headAbs);
+    headAbs.style.color = col;
+    const headRel = document.createElement('h2');
+    headRel.style.color = col;
+    headRel.textContent=`new ${headline}`;
+    divRel.innerHTML='';
+    divRel.append(headRel);
+    const headPerc = document.createElement('h2');
+    headPerc.style.color = col;
+    headPerc.textContent=`growth ${headline}`;
+    divPerc.innerHTML='';
+    divPerc.append(headPerc);
+    
+
     for (let i = 0; i < entries; i++) {
         const entry = document.createElement('p');
         const name = sortAbs[i].name;
@@ -416,16 +461,35 @@ async function renderSorting(entries,domain){
         quad.style.width = `${rel/remap}px`;
         divRel.append(quad);
     };
+    if (domain=='deaths'){entries = 10} ;
     for (let i = 0; i < entries; i++) {
         const entry = document.createElement('p');
         const name = sortPerc[i].name;
         const perc = sortPerc[i].perc;
         entry.textContent = `${i+1}. ${name}, ${perc.toFixed(0)}%`;
         divPerc.append(entry);
+
+        const doubling = document.createElement('span');
+        doubling.setAttribute('class', 'doubling');
+        doubling.textContent = ` (doubled in ${doublingTime(perc).toFixed(0)} days)`;
+        entry.appendChild(doubling);
     };
     const info = document.createElement('p');
     info.textContent = `*only countries with more than 500 cases, growth is average for last 4 days`;
     info.setAttribute('class', 'light');
     divPerc.append(info);
 }
+
+function sortingButtons(){
+    document.getElementById('btnc').addEventListener('click',(evt)=>{
+        renderSorting(15,'confirmed');
+    });
+    document.getElementById('btnd').addEventListener('click',(evt)=>{
+        renderSorting(15,'deaths');
+    });
+    document.getElementById('btnr').addEventListener('click',(evt)=>{
+        renderSorting(15,'recovered');
+    });
+}
+
 
