@@ -38,6 +38,9 @@ p {
     line-height: 1.8;
 }
 
+a {
+    color: #727272;
+}
 
 .container {
     display: flex;
