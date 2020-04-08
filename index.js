@@ -31,3 +31,7 @@ app.get('/recovered', async (req, res) => {
   const data = await response.text();
   res.send(data);
 });
+
+app.get('/',(req,res) => {
+  return res.send('Hello');
+});
