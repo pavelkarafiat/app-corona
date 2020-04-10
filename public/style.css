@@ -102,8 +102,11 @@ a {
 
 .buttons{
     text-align: center;
+    margin: 10px 0px 10px 0px;
+}
+
+.buttons.down{
     margin: 70px 0px 10px 0px;
-    /*font-size: 0px;*/
 }
 
 .buttons button{
@@ -127,9 +130,12 @@ select{
 .r{color: #5c9723;}
 .d{color: #262626;}
 .c{color: #ed330e;}
+.b{color: #0088d6;}
 .rb{background-color: #5c9723;}
 .db{background-color: #262626;}
 .cb{background-color: #ed330e;}
+.blueb{background-color: #0088d6;}
+.greyb{background-color: #949494;}
 
 
 #stat p.light{

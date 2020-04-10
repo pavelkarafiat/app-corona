@@ -13,6 +13,10 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="style.css">
+  
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
 
   <!-- Global site tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-12061543-20"></script>
@@ -33,11 +37,17 @@
       <label for="countrySelect">Select country:</label>
       <select id="countrySelect"><option value=""></option></select>
       <h2 class="headline"><span id="country"></span>:</h2>
+      <div class="buttons" id="czbuttons">
+        <button type="button" class="greyb" id='btnabs'>Absolute</button>
+        <button type="button" class="blueb" id='btntest'>Per tests</button>
+      </div>
     </div>
     <div class="info">
       <span id="infoCountryC" class="infoTextb c"></span><span class="infoText">Cases, </span>
-      <span id="infoCountryR" class="infoTextb r"></span><span class="infoText">Recovered, </span>
-      <span id="infoCountryD" class="infoTextb d"></span><span class="infoText">Deaths</span>
+      <span id="infoCountryR" class="infoTextb r s-abs"></span><span class="infoTex s-abs">Recovered, </span>
+      <span id="infoCountryD" class="infoTextb d s-abs"></span><span class="infoText s-abs">Deaths</span>
+      <span id="infoCountryTests" class="infoTextb b s-t"></span><span class="infoText s-t">Tests, </span>
+      <span id="infoCountryRatio" class="infoTextb b s-t"></span><span class="infoText s-t">Positive tests</span>
     </div>
   </div>
 
@@ -72,7 +82,7 @@
     </div>
   </div>
 
-  <div class="buttons">
+  <div class="buttons down">
     <button type="button" class="cb" id='btnc'>Cases</button>
     <button type="button" class="rb" id='btnr'>Recovered</button>
     <button type="button" class="db" id='btnd'>Deaths</button>
@@ -91,11 +101,14 @@
     <h2>credits:</h2>
     <p>
     Source code on <a href="https://github.com/pavelkarafiat/app-corona">Github</a><br>
-    Based on <a href="https://github.com/CSSEGISandData/COVID-19">CSSE COVID-19 Dataset</a> provided by <a href="https://www.jhu.edu/">JHU CSSE</a> (John Hopkins university, Baltimore, Usa)<br>
+    Data: <a href="https://github.com/CSSEGISandData/COVID-19">CSSE COVID-19 Dataset</a> provided by <a href="https://www.jhu.edu/">JHU CSSE</a><br>
+    <a href="https://onemocneni-aktualne.mzcr.cz/covid-19">Onemocneni-aktualne.mzcr.cz</a> provided by MZČR</a><br>
     Coded with Js, Node.js, Chart.js. App is hosted on Heroku.
     </p>
   </div>
 
-  <script src="corona.js"></script>
+  <script src="data.js"></script>
+  <script src="graph.js"></script>
+  <script src="rendering.js"></script>
 </body>
 </html>

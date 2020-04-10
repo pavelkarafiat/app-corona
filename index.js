@@ -35,3 +35,10 @@ app.get('/recovered', async (req, res) => {
 app.get('/',(req,res) => {
   return res.send('Hello');
 });
+
+app.get('/testscz', async (req, res) => {
+  const tests = 'https://onemocneni-aktualne.mzcr.cz/api/v1/covid-19/testy.json';
+  const response = await fetch(tests);
+  const data = await response.json();
+  res.send(data);
+});
