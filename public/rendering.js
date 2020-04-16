@@ -1,6 +1,5 @@
 
 
-
 const defaultCountry = 'Czechia';
 let country = defaultCountry;
 const countryHeader = document.getElementById('country');
@@ -9,11 +8,11 @@ countryHeader.textContent = ` ${country}`;
 
 renderAll();
 
-
 function renderAll(){
     renderOption();
     drawChart(country);
     drawChartWorld();
+    drawChartTop();
     renderInfoCountry(country);
     renderInfoWorld();
     renderSorting(15,'confirmed');
