@@ -25,7 +25,12 @@ function createDataset(dataset,country,n){
 
 
 function createOptionsTop(labels, data, countries) {
-    
+    let ratio = 2;
+    let w = window.innerWidth;
+    if (w<800){
+        ratio = 1;
+    }
+
     //datain is array of array
     let _datasets = [];
     for (let i =0; i<data.length;i++){
@@ -41,7 +46,7 @@ function createOptionsTop(labels, data, countries) {
         options: {
             responsive: true,
             maintainAspectRatio: true,
-            aspectRatio: 1.7,
+            aspectRatio: ratio,
             tooltips: {enabled: false},
             hover: {mode: null},
             legend: {

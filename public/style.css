@@ -73,6 +73,11 @@ a {
     }
 }
 
+.longertext{
+    margin: 20px auto;
+    max-width: 800px;
+    padding: 20px 20px 0px 20px;
+}
 
 #options{
     margin: 60px 0 30px 0;
